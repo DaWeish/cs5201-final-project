@@ -1,119 +1,36 @@
-////////////////////////////////////////////////////////////////////////////////
-// author Connor Walsh
-// file   driver.cpp
-// brief  Driver class for Assignment 3
-////////////////////////////////////////////////////////////////////////////////
 
 #include <iostream>
-#include <iomanip>
-#include <fstream>
-#include <cmath>
 
-#include "../linear_algebra/MathVector.h"
-#include "../linear_algebra/MathMatrix2D.h"
-#include "../linear_algebra/GaussianEliminiation.h"
-#include "../linear_algebra/IMathMatrix.h"
+#include "../linear_algebra/math_matrix/IMathMatrix.h"
+#include "../linear_algebra/math_matrix/BaseMathMatrix.h"
+#include "../linear_algebra/math_matrix/MathMatrix.h"
 
 using namespace std;
 
-int main(int argc, char** argv)
-{  
-  if (argc != 2)
-  {
-    cout << "Usage: " << argv[0] << " input_file " << endl;
-    return 1;
-  }
+int main () {
+  cout << "Creating a MathMatrix object!" << endl;
 
-  ifstream inputFile;
-  int numPoints = 0;
-  GaussianElimination<double> gaussSolver;
+  MathMatrix<double> matrix;
+  IMathMatrix<double>& refMatrix = matrix;
+  IMathMatrix<double>* ptrMatrix = &matrix;
+  IMathMatrix<double>* clonedMatrix = ptrMatrix->clone();
 
-  inputFile.open(argv[1]);
-  if (inputFile.is_open())
-  {
-    inputFile >> numPoints;
-    if (numPoints < 0)
-    {
-      cout << "Cannot work on a negative number of points!" << endl;
-      return 1;
-    }
+  cout << "Calling rows and cols from a base reference!" << endl;
+  cout << "Rows : " << refMatrix.rows() << endl;
+  cout << "Cols : " << refMatrix.cols() << endl;
 
-    MathVector<double> xValues(numPoints);
-    MathVector<double> yValues(numPoints);
+  cout << "Calling rows and cols from a base pointer!" << endl;
+  cout << "Rows : " << ptrMatrix->rows() << endl;
+  cout << "Cols : " << ptrMatrix->cols() << endl;
 
-    for (auto i = 0; i < numPoints && inputFile.good(); ++i)
-    {
-      inputFile >> xValues[i];
+  cout << "Calling rows and cols from the matrix object" << endl;
+  cout << "Rows : " << matrix.rows() << endl;
+  cout << "Cols : " << matrix.cols() << endl;
 
-      if (inputFile.good())
-      {
-        inputFile >> yValues[i];
-      }
-      else
-      {
-        cout << "Failed to parse two points for row " << i << ". Quitting."
-          << endl;
-        return 1;
-      }
-    }
+  cout << "Calling rows and cols from the cloned object" << endl;
+  cout << "Rows : " << clonedMatrix->rows() << endl;
+  cout << "Cols : " << clonedMatrix->cols() << endl;
 
-    cout << std::setprecision(5);
-    cout << std::fixed;
-    cout << std::showpoint;
-    cout << std::right;
-
-//    std::cout << "== X Values ==\n" << xValues << endl;
-//    std::cout << "== Y Values ==\n" << yValues << endl;
-
-    MathMatrix2D<double> vandermonde(numPoints, numPoints);
-    for (int row = 0, numRows = numPoints; row < numRows; ++row)
-    {
-      for (int col = 0, numCols = numPoints; col < numCols; ++col)
-      {
-        vandermonde[row][col] = pow(xValues[row], col);
-      }
-    }
-
-    cout << "== Testing Matrix Interface ==\n";
-    IMathMatrix<double>& baseReference = vandermonde;
-    cout << "== Testing Polymorphic Insertion Operator ==\n" << baseReference
-      << endl;
-    cout << "== Testing Polymorphic Rows and Columns Accessors ==\n" <<
-      "Rows: " << baseReference.rows() << "  Columns: " << baseReference.columns()
-      << endl << endl;
-
-    cout << "== Testing Polymorphic row access via projection operator ==\n" <<
-      "matrix[0] = " << baseReference[0] << endl << endl;
-
-    MathMatrix2D<double> augmented = 
-      GaussianElimination<double>::augmentedMatrix(vandermonde, yValues);
-    IMathMatrix<double>& baseReference2 = augmented;
-    cout << "== Testing Polymorphic Equality Operator ==\n" <<
-      "Augmented == Original?: " << (baseReference == baseReference2) <<
-      endl << endl;
-
-    cout << "== Building Augmented Matrix for Polynomial Interpolation ==\n";
-    cout << endl << augmented << endl;
-
-    try {
-      MathVector<double> gaussianNoPivot = gaussSolver(vandermonde, yValues);
-      cout << gaussianNoPivot << endl;
-
-      MathVector<double> gaussianWithPivot = gaussSolver(vandermonde, yValues, true);
-      cout << gaussianWithPivot << endl;
-    } 
-    catch (std::exception e)
-    {
-      cout << e.what() << "\nQuitting Driver." << endl;
-      return 0;
-    }
-
-  }
-  else 
-  {
-    cout << "Unable to Open file, exiting..." << argv[1] << "\n";
-    return 1;
-  }
-  inputFile.close();
+  cout << "Ending main" << endl;
   return 0;
 }
