@@ -9,6 +9,7 @@
 #pragma once
 
 #include <stddef.h>
+#include <iostream>
 
 #include "../MathVector.h"
 
@@ -46,6 +47,9 @@ class IMathMatrix
 
     virtual void swap(size_t row1, size_t row2) = 0;
 
+    virtual void print(std::ostream& os) const;
+    virtual void read(std::istream& is) const;
+
     // Not sure if I will need this function in the interface
     // virtual MathMatrix<T>* transpose() const = 0;
 
@@ -56,6 +60,20 @@ template <class T>
 IMathMatrix<T>* operator*(const T& scaler, const IMathMatrix<T>& rhs)
 {
   return rhs * scaler;
+}
+
+template <class T>
+std::ostream& operator<<(std::ostream& os, const IMathMatrix<T>& rhs)
+{
+  rhs.print(os);
+  return os;
+}
+
+template <class T>
+std::istream& operator>>(std::istream& is, IMathMatrix<T>& rhs)
+{
+  rhs.read(is);
+  return is;
 }
 
 #endif
