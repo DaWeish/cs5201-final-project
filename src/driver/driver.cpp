@@ -6,48 +6,35 @@
 #include "../linear_algebra/math_matrix/MathMatrix.h"
 #include "../linear_algebra/math_matrix/TriDiagMathMatrix.h"
 
+#include "../linear_algebra/QRDecompositor.h"
+
 using namespace std;
 
 int main () {
 
-  MathMatrix<double> matrix(2, 3);
-  matrix(0, 0) = 2;
-  matrix(0, 1) = 1;
-  matrix(0, 2) = 1;
-  matrix(1, 0) = 3;
-  matrix(1, 1) = 1;
-  matrix(1, 2) = 2;
+  IMathMatrix<double>* matrix = new MathMatrix<double>(3, 3);
+  (*matrix)(0, 0) = -4;
+  (*matrix)(0, 1) = 14;
+  (*matrix)(0, 2) = 0;
+  (*matrix)(1, 0) = -5;
+  (*matrix)(1, 1) = 13;
+  (*matrix)(1, 2) = 0;
+  (*matrix)(2, 0) = -1;
+  (*matrix)(2, 1) = 0;
+  (*matrix)(2, 2) = 2;
 
-  MathMatrix<double> matrix2(3, 2);
-  matrix2(0, 0) = 1;
-  matrix2(0, 1) = 2;
-  matrix2(1, 0) = 1;
-  matrix2(1, 1) = 0;
-  matrix2(2, 0) = 3;
-  matrix2(2, 1) = 0;
+  IMathMatrix<double>* triangle = new MathMatrix<double>(3, 3);
+  IMathMatrix<double>* orthonormal = new MathMatrix<double>(3, 3);
 
-  MathMatrix<double> copy;
+  cout << "First Matrix = \n" << (*matrix) << endl;
 
-  IMathMatrix<double>& firstMatrix = matrix;
-  IMathMatrix<double>& secondMatrix = matrix2;
-  IMathMatrix<double>& copyMatrix = copy;
+  QRDecompositor<double> qrMethod;
+  qrMethod(matrix, orthonormal, triangle, 5);
 
-  cout << "First Matrix = \n" << firstMatrix << endl;
-  cout << "Second Matrix = \n" << secondMatrix << endl;
+  cout << "First Matrix = \n" << (*matrix) << endl;
+  cout << "Orthonormal Matrix = \n" << (*orthonormal) << endl;
+  cout << "Triangle Matrix = \n" << (*triangle) << endl;
 
-  cout << "Multiply first * second  = \n";
-  IMathMatrix<double>* result = firstMatrix * secondMatrix;
-  cout << *result << endl;
-  delete result;
-
-  cout << "Multiply by a scaler 4.5 = \n";
-  result = firstMatrix * 4.5;
-  cout << *result << endl;
-  delete result;
-
-  cout << "Assign copy to first matrix; copy = \n";
-  copyMatrix = firstMatrix;
-  cout << copy << endl;
 
   return 0;
 }

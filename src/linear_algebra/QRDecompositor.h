@@ -11,6 +11,7 @@
 #include <stdexcept>
 
 #include "../linear_algebra/MathVector.h"
+#include "../linear_algebra/math_matrix/IMathMatrix.h"
 
 ////////////////////////////////////////////////////////////////////////////////
 // class QRDecompositor
@@ -35,7 +36,41 @@ class QRDecompositor
     void operator()(const std::vector<MathVector<T>>& input, 
         std::vector<MathVector<T>>& orthonormal,
         std::vector<MathVector<T>>& triangle) const;
+
+    void operator()(IMathMatrix<T>* input, IMathMatrix<T>* orthonormal,
+        IMathMatrix<T>* triangle, int numIter) const;
 };
+
+template <class T>
+void QRDecompositor<T>::operator()(IMathMatrix<T>* input, IMathMatrix<T>* 
+    orthonormal, IMathMatrix<T>* triangle, int numIter) const
+{
+  for (int k = 0, numRows = input->rows(); k < numRows; ++k)
+  {
+    for (int i = 0; i < k; ++i)
+    {
+      (*triangle)(k, i) = (*input)[k] * (*orthonormal)[i];
+    }
+
+    MathVector<T> offset(numRows);
+    MathVector<T> orthagonalized(numRows);
+
+    for (int j = 0; j < k; ++j)
+    {
+      offset += (*triangle)(k, j) * (*orthonormal)[j];
+    }
+    orthagonalized = (*input)[k] - offset;
+
+    // Calculate the kth r value
+    (*triangle)[k][k] = orthagonalized.getMagnitude();
+    if ((*triangle)[k][k] == 0)
+    {
+      throw std::domain_error("QR method requires division by zero!");
+    }
+
+    (*orthonormal)[k] = (1.0 / (*triangle)(k, k)) * orthagonalized;
+  }
+}
 
 template <class T>
 void QRDecompositor<T>::operator()(const std::vector<MathVector<T>>& input, 
