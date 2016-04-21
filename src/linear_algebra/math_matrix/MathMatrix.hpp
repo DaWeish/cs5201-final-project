@@ -41,7 +41,7 @@ MathMatrix<T>::MathMatrix(MathMatrix<T>&& other) : myColumns(other.myColumns)
 template <class T>
 MathMatrix<T>::~MathMatrix<T>()
 {
-  for (auto rowPointer : myRows)
+  for (auto& rowPointer : myRows)
   {
     delete(rowPointer);
   }
@@ -63,10 +63,28 @@ void MathMatrix<T>::swap(MathMatrix<T>& other)
 }
 
 template <class T>
-template <template <class> class MatrixType>
-MathMatrix<T>& MathMatrix<T>::opAssign(const BaseMathMatrix<T, MatrixType>& rhs)
+MathMatrix<T>& MathMatrix<T>::opAssign(const IMathMatrix<T>& rhs)
 {
-  std::cout << "  In MathMatrix opAssign" << std::endl;
+  if (myRows.size() != rhs.rows())
+  {
+    for (auto& row : myRows)
+    {
+      delete row;
+    }
+    myRows = Array<MathVector<T>*>(rhs.rows());
+  }
+
+  myColumns = rhs.cols();
+  for (int i = 0, numRows = myRows.size(); i < numRows; ++i)
+  {
+    myRows[i] = new MathVector<T>(myColumns);
+    for (int j = 0; j < myColumns; ++j)
+    {
+      at(i, j) = rhs(i, j);
+    }
+  }
+
+  return *this;
 }
 
 template <class T>
@@ -133,6 +151,91 @@ MathMatrix<T>& MathMatrix<T>::opTimesEquals(const T& scaler)
     (*row) *= scaler;
   }
   return *this;
+}
+
+template <class T>
+MathMatrix<T>* MathMatrix<T>::opPlus(const IMathMatrix<T>& rhs) const
+{
+  if (myRows.size() != rhs.rows() || myColumns != rhs.cols())
+  {
+    throw std::domain_error("Cannot add two matrices of differing dimensions!");
+  }
+
+  MathMatrix<T>* result = new MathMatrix<T>(*this);
+  for (int row = 0, numRows = myRows.size(); row < numRows; ++row)
+  {
+    for (int col = 0; col < myColumns; ++col)
+    {
+      result->at(row, col) += rhs(row, col);
+    }
+  }
+
+  return result;
+}
+
+template <class T>
+MathMatrix<T>* MathMatrix<T>::opMinus(const IMathMatrix<T>& rhs) const
+{
+  if (myRows.size() != rhs.rows() || myColumns != rhs.cols())
+  {
+    throw std::domain_error("Cannot subtract two matrices of differing dimensions!");
+  }
+
+  MathMatrix<T>* result = new MathMatrix<T>(*this);
+  for (int row = 0, numRows = myRows.size(); row < numRows; ++row)
+  {
+    for (int col = 0; col < myColumns; ++col)
+    {
+      result->at(row, col) -= rhs(row, col);
+    }
+  }
+
+  return result;
+}
+
+template <class T>
+MathMatrix<T>* MathMatrix<T>::opMinus() const
+{
+  MathMatrix<T>* result = new MathMatrix<T>(*this);
+  for (int row = 0, numRows = myRows.size(); row < numRows; ++row)
+  {
+    for (int col = 0; col < myColumns; ++col)
+    {
+      result->at(row, col) = -result->at(row, col);
+    }
+  }
+  return result;
+}
+
+template <class T>
+MathMatrix<T>* MathMatrix<T>::opTimes(const IMathMatrix<T>& rhs) const
+{
+  if (myColumns != rhs.rows()) {
+    throw std::domain_error("Cannot multiply matrices of incorrect dimensions!");
+  }
+
+  MathMatrix<T>* result = new MathMatrix<T>(myRows.size(), rhs.cols());
+  T sum;
+  for (int lhsRow = 0, numRows = myRows.size(); lhsRow < numRows; ++lhsRow)
+  {
+    for (int rhsCol = 0, numCols = rhs.cols(); rhsCol < numCols; ++rhsCol)
+    {
+      sum = 0;
+      for (int element = 0; element < myColumns; ++element)
+      {
+        sum += at(lhsRow, element) * rhs(element, rhsCol);
+      }
+      result->at(lhsRow, rhsCol) = sum;
+    }
+  }
+  return result;
+}
+
+template <class T>
+MathMatrix<T>* MathMatrix<T>::opTimes(const T& scaler) const
+{
+  MathMatrix<T>* result = new MathMatrix<T>(*this);
+  return &(result->opTimesEquals(scaler));
 }
 
 template <class T>

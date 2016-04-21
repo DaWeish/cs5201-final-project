@@ -9,74 +9,45 @@
 using namespace std;
 
 int main () {
-  cout << "Creating a MathMatrix object!" << endl;
 
-  MathMatrix<double> matrix(2, 5);
-  MathMatrix<double> matrix2(3, 7);
-  matrix[0][0] = 7;
-  matrix[0][3] = 4;
-  matrix[1][2] = 3;
-  matrix[1][4] = 10;
+  MathMatrix<double> matrix(2, 3);
+  matrix(0, 0) = 2;
+  matrix(0, 1) = 1;
+  matrix(0, 2) = 1;
+  matrix(1, 0) = 3;
+  matrix(1, 1) = 1;
+  matrix(1, 2) = 2;
 
-  
-  IMathMatrix<double>& refMatrix = matrix;
-  IMathMatrix<double>& refMatrix2 = matrix2;
+  MathMatrix<double> matrix2(3, 2);
+  matrix2(0, 0) = 1;
+  matrix2(0, 1) = 2;
+  matrix2(1, 0) = 1;
+  matrix2(1, 1) = 0;
+  matrix2(2, 0) = 3;
+  matrix2(2, 1) = 0;
 
-  cout << "Value at 1, 2 : " << refMatrix(1, 2) << std::endl;
-  cout << "Value at 1, 2 : " << refMatrix[1][2] << std::endl;
-  refMatrix2(0, 4) = 6;
-  refMatrix2(0, 1) = 9;
-  refMatrix2(1, 6) = 11;
-  refMatrix2(1, 3) = 1;
-  refMatrix2(2, 2) = 8;
+  MathMatrix<double> copy;
 
-  IMathMatrix<double>* ptrMatrix = &matrix;
-  IMathMatrix<double>* ptrMatrix2 = &matrix2;
+  IMathMatrix<double>& firstMatrix = matrix;
+  IMathMatrix<double>& secondMatrix = matrix2;
+  IMathMatrix<double>& copyMatrix = copy;
 
+  cout << "First Matrix = \n" << firstMatrix << endl;
+  cout << "Second Matrix = \n" << secondMatrix << endl;
 
-  cout << "Printing out matrix from base reference!" << endl;
-  cout << refMatrix << endl;
-  cout << refMatrix2 << endl;
+  cout << "Multiply first * second  = \n";
+  IMathMatrix<double>* result = firstMatrix * secondMatrix;
+  cout << *result << endl;
+  delete result;
 
-  cout << "Are the equal? " << (refMatrix == refMatrix2) << endl;
-  cout << "Are the unequal? " << (refMatrix != refMatrix2) << endl;
+  cout << "Multiply by a scaler 4.5 = \n";
+  result = firstMatrix * 4.5;
+  cout << *result << endl;
+  delete result;
 
-  cout << "Swapping first and second rows through pointer to Interface" << endl;
-  ptrMatrix->swap(0, 1);
-  ptrMatrix2->swap(0, 1);
-  cout << *ptrMatrix << endl;
-  cout << *ptrMatrix2 << endl;
+  cout << "Assign copy to first matrix; copy = \n";
+  copyMatrix = firstMatrix;
+  cout << copy << endl;
 
-  cout << "Calling rows and cols from a base reference!" << endl;
-  cout << "rows: " << refMatrix.rows() << endl;
-  cout << "cols: " << refMatrix.cols() << endl;
-  cout << "rows: " << refMatrix2.rows() << endl;
-  cout << "cols: " << refMatrix2.cols() << endl;
-  cout << endl;
-
-//  refMatrix = refMatrix2;
-
-  cout << "Calling rows and cols from a base pointer!" << endl;
-  cout << "rows: " << ptrMatrix->rows() << endl;
-  cout << "cols: " << ptrMatrix->cols() << endl;
-  cout << "rows: " << ptrMatrix2->rows() << endl;
-  cout << "cols: " << ptrMatrix2->cols() << endl;
-  cout << endl;
-
-  cout << "Calling rows and cols from the cloned object" << endl;
-  IMathMatrix<double>* clonedMatrix = ptrMatrix->clone();
-  clonedMatrix->rows();
-  clonedMatrix->cols();
-  cout << endl;
-
-  cout << "Does the cloned object equal the original? " << 
-    ((*clonedMatrix) == refMatrix) << endl;
-
-  cout << "Multiplying by scaler 4" << endl;
-  cout << refMatrix << endl;
-  cout << (refMatrix *= 4) << endl;
-
-  cout << "Adding cloned to original\n" << ((*clonedMatrix) += refMatrix) << endl;
-  cout << "Subtracting cloned from original\n" << (refMatrix -= (*clonedMatrix)) << endl;
   return 0;
 }

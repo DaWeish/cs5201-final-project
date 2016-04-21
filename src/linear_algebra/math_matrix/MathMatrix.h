@@ -27,8 +27,7 @@ class MathMatrix : public BaseMathMatrix<T, MathMatrix>
     MathMatrix(MathMatrix&& other);
     ~MathMatrix();
 
-    template <template <class> class MatrixType>
-    MathMatrix<T>& opAssign(const BaseMathMatrix<T, MatrixType>& rhs);
+    MathMatrix<T>& opAssign(const IMathMatrix<T>& rhs);
     MathMatrix<T>& operator=(MathMatrix rhs);
 
     bool opEquality(const IMathMatrix<T>& rhs) const;
@@ -37,6 +36,12 @@ class MathMatrix : public BaseMathMatrix<T, MathMatrix>
     MathMatrix<T>& opMinusEquals(const IMathMatrix<T>& rhs);
 
     MathMatrix<T>& opTimesEquals(const T& scaler);
+
+    MathMatrix<T>* opPlus(const IMathMatrix<T>& rhs) const;
+    MathMatrix<T>* opMinus(const IMathMatrix<T>& rhs) const;
+    MathMatrix<T>* opMinus() const;
+    MathMatrix<T>* opTimes(const IMathMatrix<T>& rhs) const;
+    MathMatrix<T>* opTimes(const T& scaler) const;
 
     MathVector<T>& at(size_t index);
     const MathVector<T>& at(size_t index) const;
