@@ -6,6 +6,8 @@
 #include "../linear_algebra/math_matrix/MathMatrix.h"
 #include "../linear_algebra/math_matrix/TriDiagMathMatrix.h"
 #include "../linear_algebra/math_matrix/DiagonalMathMatrix.h"
+#include "../linear_algebra/math_matrix/UpTriangleMathMatrix.h"
+#include "../linear_algebra/math_matrix/LowTriangleMathMatrix.h"
 
 #include "../linear_algebra/QRDecompositor.h"
 
@@ -39,6 +41,14 @@ int main () {
   IMathMatrix<double>* diagonal = new DiagonalMathMatrix<double>(3, 3);
   (*diagonal) = (*matrix);
   cout << "Diagonal matrix = \n" << (*diagonal) << endl;
+
+  IMathMatrix<double>* upTriangle = new UpTriangleMathMatrix<double>(3, 3);
+  (*upTriangle) = (*matrix);
+  cout << "Up Triangle matrix = \n" << (*upTriangle) << endl;
+
+  IMathMatrix<double>* lowTriangle = new LowTriangleMathMatrix<double>(3, 3);
+  (*lowTriangle) = (*matrix);
+  cout << "Low Triangle maktrix = \n" << (*lowTriangle) << endl;
 
   return 0;
 }

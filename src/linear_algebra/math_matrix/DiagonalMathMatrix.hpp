@@ -181,7 +181,7 @@ MathMatrix<T>* DiagonalMathMatrix<T>::opMinus
       }
       else
       {
-        result->at(row, col) = rhs(row, col);
+        result->at(row, col) = -rhs(row, col);
       }
     }
   }
