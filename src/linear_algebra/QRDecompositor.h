@@ -45,30 +45,35 @@ template <class T>
 void QRDecompositor<T>::operator()(IMathMatrix<T>* input, IMathMatrix<T>* 
     orthonormal, IMathMatrix<T>* triangle, int numIter) const
 {
-  for (int k = 0, numRows = input->rows(); k < numRows; ++k)
-  {
-    for (int i = 0; i < k; ++i)
+  for (int a = 0; a < numIter; ++a) {
+    for (int k = 0, numRows = input->rows(); k < numRows; ++k)
     {
-      (*triangle)(k, i) = (*input)[k] * (*orthonormal)[i];
+      for (int i = 0; i < k; ++i)
+      {
+        (*triangle)(k, i) = (*input)[k] * (*orthonormal)[i];
+      }
+
+      MathVector<T> offset(numRows);
+      MathVector<T> orthagonalized(numRows);
+
+      for (int j = 0; j < k; ++j)
+      {
+        offset += (*triangle)(k, j) * (*orthonormal)[j];
+      }
+      orthagonalized = (*input)[k] - offset;
+
+      // Calculate the kth r value
+      (*triangle)[k][k] = orthagonalized.getMagnitude();
+      if ((*triangle)[k][k] == 0)
+      {
+        throw std::domain_error("QR method requires division by zero!");
+      }
+
+      (*orthonormal)[k] = (1.0 / (*triangle)(k, k)) * orthagonalized;
     }
-
-    MathVector<T> offset(numRows);
-    MathVector<T> orthagonalized(numRows);
-
-    for (int j = 0; j < k; ++j)
-    {
-      offset += (*triangle)(k, j) * (*orthonormal)[j];
-    }
-    orthagonalized = (*input)[k] - offset;
-
-    // Calculate the kth r value
-    (*triangle)[k][k] = orthagonalized.getMagnitude();
-    if ((*triangle)[k][k] == 0)
-    {
-      throw std::domain_error("QR method requires division by zero!");
-    }
-
-    (*orthonormal)[k] = (1.0 / (*triangle)(k, k)) * orthagonalized;
+    delete input;
+    (a % 2 == 0) ?  input = (*orthonormal) * (*triangle) :
+    input = (*triangle) * (*orthonormal);
   }
 }
 

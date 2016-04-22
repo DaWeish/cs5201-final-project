@@ -5,6 +5,7 @@
 #include "../linear_algebra/math_matrix/BaseMathMatrix.h"
 #include "../linear_algebra/math_matrix/MathMatrix.h"
 #include "../linear_algebra/math_matrix/TriDiagMathMatrix.h"
+#include "../linear_algebra/math_matrix/DiagonalMathMatrix.h"
 
 #include "../linear_algebra/QRDecompositor.h"
 
@@ -13,15 +14,15 @@ using namespace std;
 int main () {
 
   IMathMatrix<double>* matrix = new MathMatrix<double>(3, 3);
-  (*matrix)(0, 0) = -4;
-  (*matrix)(0, 1) = 14;
+  (*matrix)(0, 0) = 2;
+  (*matrix)(0, 1) = 1;
   (*matrix)(0, 2) = 0;
-  (*matrix)(1, 0) = -5;
-  (*matrix)(1, 1) = 13;
-  (*matrix)(1, 2) = 0;
-  (*matrix)(2, 0) = -1;
-  (*matrix)(2, 1) = 0;
-  (*matrix)(2, 2) = 2;
+  (*matrix)(1, 0) = 1;
+  (*matrix)(1, 1) = 3;
+  (*matrix)(1, 2) = 1;
+  (*matrix)(2, 0) = 0;
+  (*matrix)(2, 1) = 1;
+  (*matrix)(2, 2) = 4;
 
   IMathMatrix<double>* triangle = new MathMatrix<double>(3, 3);
   IMathMatrix<double>* orthonormal = new MathMatrix<double>(3, 3);
@@ -29,12 +30,15 @@ int main () {
   cout << "First Matrix = \n" << (*matrix) << endl;
 
   QRDecompositor<double> qrMethod;
-  qrMethod(matrix, orthonormal, triangle, 5);
+  qrMethod(matrix, orthonormal, triangle, 30);
 
   cout << "First Matrix = \n" << (*matrix) << endl;
   cout << "Orthonormal Matrix = \n" << (*orthonormal) << endl;
   cout << "Triangle Matrix = \n" << (*triangle) << endl;
 
+  IMathMatrix<double>* diagonal = new DiagonalMathMatrix<double>(3, 3);
+  (*diagonal) = (*matrix);
+  cout << "Diagonal matrix = \n" << (*diagonal) << endl;
 
   return 0;
 }
