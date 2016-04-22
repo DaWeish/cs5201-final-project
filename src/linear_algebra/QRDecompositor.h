@@ -34,10 +34,6 @@ class QRDecompositor
 // long as division by zero does not occur, otherwise an exception is thrown.
 ////////////////////////////////////////////////////////////////////////////////
   public:
-    void operator()(const std::vector<MathVector<T>>& input, 
-        std::vector<MathVector<T>>& orthonormal,
-        std::vector<MathVector<T>>& triangle) const;
-
     void operator()(IMathMatrix<T>* input, IMathMatrix<T>* orthonormal,
         IMathMatrix<T>* triangle, int numIter) const;
 };
@@ -77,40 +73,4 @@ void QRDecompositor<T>::operator()(IMathMatrix<T>* input, IMathMatrix<T>*
     input = (*triangle) * (*orthonormal);
   }
 }
-
-template <class T>
-void QRDecompositor<T>::operator()(const std::vector<MathVector<T>>& input, 
-    std::vector<MathVector<T>>& orthonormal,
-    std::vector<MathVector<T>>& triangle) const
-{
-  int size = input.size();
-  for (auto k = 0; k < size; ++k)
-  {
-
-    for (auto i = 0; i < k; ++i)
-    {
-      triangle[k][i] = input[k] * orthonormal[i];
-    }
-
-    // Calculate the Orthagonalized vector
-    MathVector<T> offset(size);
-    MathVector<T> orthagonalized(size);
-
-    for (auto j = 0; j < k; ++j)
-    {
-      offset += triangle[k][j] * orthonormal[j];
-    }
-    orthagonalized = input[k] - offset;
-
-    // Calculate the kth r value
-    triangle[k][k] = orthagonalized.getMagnitude();
-    if (triangle[k][k] == 0)
-    {
-      throw std::domain_error("QRDecomposition requires division by zero!");
-    }
-
-    orthonormal[k] = (1.0 / triangle[k][k]) * orthagonalized;
-  }
-}
-
 #endif
