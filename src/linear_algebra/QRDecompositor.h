@@ -9,6 +9,7 @@
 
 #include <vector>
 #include <stdexcept>
+#include <iostream>
 
 #include "../linear_algebra/MathVector.h"
 #include "../linear_algebra/math_matrix/IMathMatrix.h"
@@ -63,8 +64,8 @@ void QRDecompositor<T>::operator()(IMathMatrix<T>* input, IMathMatrix<T>*
       orthagonalized = (*input)[k] - offset;
 
       // Calculate the kth r value
-      (*triangle)[k][k] = orthagonalized.getMagnitude();
-      if ((*triangle)[k][k] == 0)
+      (*triangle)(k, k) = orthagonalized.getMagnitude();
+      if ((*triangle)(k, k) == 0)
       {
         throw std::domain_error("QR method requires division by zero!");
       }

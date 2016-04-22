@@ -53,6 +53,7 @@ class MathMatrix : public BaseMathMatrix<T, MathMatrix>
 
     void swapRows(size_t row1, size_t row2);
     void printToStream(std::ostream& os) const;
+    void readFromStream(std::istream& is);
 
   private:
     void swap(MathMatrix& other);

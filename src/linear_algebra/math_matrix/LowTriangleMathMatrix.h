@@ -55,12 +55,14 @@ class LowTriangleMathMatrix : public BaseMathMatrix<T, LowTriangleMathMatrix>
 
     void swapRows(size_t row1, size_t row2);
     void printToStream(std::ostream& os) const;
+    void readFromStream(std::istream& is);
 
   private:
     void swap(LowTriangleMathMatrix& other);
 
     Array<MathVector<T>*> myRows;
     int myColumns;
+    const T zero = 0;
     constexpr static int DEFAULT_SIZE = 2;
 };
 

@@ -55,11 +55,13 @@ class UpTriangleMathMatrix : public BaseMathMatrix<T, UpTriangleMathMatrix>
 
     void swapRows(size_t row1, size_t row2);
     void printToStream(std::ostream& os) const;
+    void readFromStream(std::istream& is);
 
   private:
     void swap(UpTriangleMathMatrix& other);
 
     Array<MathVector<T>*> myRows;
+    const T zero = 0;
     int myColumns;
     constexpr static int DEFAULT_SIZE = 2;
 };

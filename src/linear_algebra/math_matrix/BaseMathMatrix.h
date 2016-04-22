@@ -117,7 +117,7 @@ class BaseMathMatrix : public IMathMatrix<T> {
 
     virtual void read(std::istream& is)
     {
-//      static_cast<Derived<T>*>(this)->readFromStream(is);
+      static_cast<Derived<T>*>(this)->readFromStream(is);
     }
 
     virtual IMathMatrix<T>* clone()

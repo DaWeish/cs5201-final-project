@@ -54,6 +54,7 @@ class DiagonalMathMatrix : public BaseMathMatrix<T, DiagonalMathMatrix>
 
     void swapRows(size_t row1, size_t row2);
     void printToStream(std::ostream& os) const;
+    void readFromStream(std::istream& is);
 
   private:
     void swap(DiagonalMathMatrix& other);
@@ -61,6 +62,7 @@ class DiagonalMathMatrix : public BaseMathMatrix<T, DiagonalMathMatrix>
     MathVector<T>* myDiagonal;
     int myRows;
     int myColumns;
+    const T zero = 0;
     constexpr static int DEFAULT_SIZE = 2;
 };
 

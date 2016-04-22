@@ -4,6 +4,7 @@
  */
 
 #include <stdexcept>
+#include <sstream>
 
 #include "MathMatrix.h"
 
@@ -90,7 +91,7 @@ MathMatrix<T>& MathMatrix<T>::opAssign(const IMathMatrix<T>& rhs)
 template <class T>
 bool MathMatrix<T>::opEquality(const IMathMatrix<T>& rhs) const
 {
-  if (myColumns != rhs.cols()) return false;
+  if (myColumns != (int)rhs.cols()) return false;
   if (myRows.size() != rhs.rows()) return false;
 
   for (int i = 0, numRows = myRows.size(); i < numRows; ++i)
@@ -106,7 +107,7 @@ bool MathMatrix<T>::opEquality(const IMathMatrix<T>& rhs) const
 template <class T>
 MathMatrix<T>& MathMatrix<T>::opPlusEquals(const IMathMatrix<T>& rhs)
 {
-  if (myRows.size() == rhs.rows() && myColumns == rhs.cols())
+  if (myRows.size() == rhs.rows() && myColumns == (int)rhs.cols())
   {
     for (auto i = 0, numRows = (int)getRows(); i < numRows; ++i)
     {
@@ -126,7 +127,7 @@ MathMatrix<T>& MathMatrix<T>::opPlusEquals(const IMathMatrix<T>& rhs)
 template <class T>
 MathMatrix<T>& MathMatrix<T>::opMinusEquals(const IMathMatrix<T>& rhs)
 {
-  if (myRows.size() == rhs.rows() && myColumns == rhs.cols())
+  if (myRows.size() == rhs.rows() && myColumns == (int)rhs.cols())
   {
     for (auto i = 0, numRows = (int)getRows(); i < numRows; ++i)
     {
@@ -156,7 +157,7 @@ MathMatrix<T>& MathMatrix<T>::opTimesEquals(const T& scaler)
 template <class T>
 MathMatrix<T>* MathMatrix<T>::opPlus(const IMathMatrix<T>& rhs) const
 {
-  if (myRows.size() != rhs.rows() || myColumns != rhs.cols())
+  if (myRows.size() != rhs.rows() || myColumns != (int)rhs.cols())
   {
     throw std::domain_error("Cannot add two matrices of differing dimensions!");
   }
@@ -176,7 +177,7 @@ MathMatrix<T>* MathMatrix<T>::opPlus(const IMathMatrix<T>& rhs) const
 template <class T>
 MathMatrix<T>* MathMatrix<T>::opMinus(const IMathMatrix<T>& rhs) const
 {
-  if (myRows.size() != rhs.rows() || myColumns != rhs.cols())
+  if (myRows.size() != rhs.rows() || myColumns != (int)rhs.cols())
   {
     throw std::domain_error("Cannot subtract two matrices of differing dimensions!");
   }
@@ -210,7 +211,7 @@ MathMatrix<T>* MathMatrix<T>::opMinus() const
 template <class T>
 MathMatrix<T>* MathMatrix<T>::opTimes(const IMathMatrix<T>& rhs) const
 {
-  if (myColumns != rhs.rows()) {
+  if (myColumns != (int)rhs.rows()) {
     throw std::domain_error("Cannot multiply matrices of incorrect dimensions!");
   }
 
@@ -286,5 +287,25 @@ void MathMatrix<T>::printToStream(std::ostream& os) const
   for (auto i = 0, numRows = (int)getRows(); i < numRows; ++i)
   {
     os << *(myRows[i]) << "\n";
+  }
+}
+
+template <class T>
+void MathMatrix<T>::readFromStream(std::istream& is) 
+{
+  std::string line;
+  for (int row = 0, numRows = myRows.size(); row < numRows; ++row)
+  {
+    if (is.good())
+    {
+      getline(is, line);
+      std::istringstream lineStream(line);
+
+      lineStream >> *(myRows[row]);
+    }
+    else
+    {
+      break;
+    }
   }
 }

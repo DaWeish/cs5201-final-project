@@ -49,9 +49,6 @@ class IMathMatrix
     virtual void print(std::ostream& os) const = 0;
     virtual void read(std::istream& is) = 0;
 
-    // Not sure if I will need this function in the interface
-//    virtual IMathMatrix<T>& transpose() = 0;
-
     virtual IMathMatrix<T>* clone() = 0; 
 };
 

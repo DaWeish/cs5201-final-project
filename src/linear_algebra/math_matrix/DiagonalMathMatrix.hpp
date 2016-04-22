@@ -57,7 +57,7 @@ void DiagonalMathMatrix<T>::swap(DiagonalMathMatrix<T>& other)
 template <class T>
 DiagonalMathMatrix<T>& DiagonalMathMatrix<T>::opAssign(const IMathMatrix<T>& rhs)
 {
-  if (myRows != rhs.rows())
+  if (myRows != (int)rhs.rows())
   {
     delete myDiagonal;
     myDiagonal = new MathVector<T>(rhs.rows());
@@ -76,8 +76,8 @@ DiagonalMathMatrix<T>& DiagonalMathMatrix<T>::opAssign(const IMathMatrix<T>& rhs
 template <class T>
 bool DiagonalMathMatrix<T>::opEquality(const IMathMatrix<T>& rhs) const
 {
-  if (myColumns != rhs.cols()) return false;
-  if (myRows != rhs.rows()) return false;
+  if (myColumns != (int)rhs.cols()) return false;
+  if (myRows != (int)rhs.rows()) return false;
 
   for (int i = 0; i < myRows; ++i)
   {
@@ -93,7 +93,7 @@ bool DiagonalMathMatrix<T>::opEquality(const IMathMatrix<T>& rhs) const
 template <class T>
 DiagonalMathMatrix<T>& DiagonalMathMatrix<T>::opPlusEquals(const IMathMatrix<T>& rhs)
 {
-  if (myRows == rhs.rows() && myColumns == rhs.cols())
+  if (myRows == (int)rhs.rows() && myColumns == (int)rhs.cols())
   {
     for (int i = 0; i < myRows; ++i)
     {
@@ -111,7 +111,7 @@ template <class T>
 DiagonalMathMatrix<T>& DiagonalMathMatrix<T>::opMinusEquals
     (const IMathMatrix<T>& rhs)
 {
-  if (myRows == rhs.rows() && myColumns == rhs.cols())
+  if (myRows == (int)rhs.rows() && myColumns == (int)rhs.cols())
   {
     for (int i = 0; i < myRows; ++i)
     {
@@ -138,7 +138,7 @@ DiagonalMathMatrix<T>& DiagonalMathMatrix<T>::opTimesEquals(const T& scaler)
 template <class T>
 MathMatrix<T>* DiagonalMathMatrix<T>::opPlus(const IMathMatrix<T>& rhs) const
 {
-  if (myRows != rhs.rows() || myColumns != rhs.cols())
+  if (myRows != (int)rhs.rows() || myColumns != (int)rhs.cols())
   {
     throw std::domain_error("Cannot add two matrices of differing dimensions!");
   }
@@ -165,7 +165,7 @@ template <class T>
 MathMatrix<T>* DiagonalMathMatrix<T>::opMinus
     (const IMathMatrix<T>& rhs) const
 {
-  if (myRows != rhs.rows() || myColumns != rhs.cols())
+  if (myRows != (int)rhs.rows() || myColumns != (int)rhs.cols())
   {
     throw std::domain_error("Cannot add two matrices of differing dimensions!");
   }
@@ -203,7 +203,7 @@ DiagonalMathMatrix<T>* DiagonalMathMatrix<T>::opMinus() const
 template <class T>
 MathMatrix<T>* DiagonalMathMatrix<T>::opTimes(const IMathMatrix<T>& rhs) const
 {
-  if (myColumns != rhs.rows()) {
+  if (myColumns != (int)rhs.rows()) {
     throw std::domain_error("Cannot multiply matrices of incorrect dimensions!");
   }
 
@@ -228,19 +228,21 @@ DiagonalMathMatrix<T>* DiagonalMathMatrix<T>::opTimes(const T& scaler) const
 template <class T>
 MathVector<T>& DiagonalMathMatrix<T>::at(size_t index)
 {
+  std::cout << index;
   throw std::domain_error("Cannot retrieve a math vector from DiagonalMatrix");
 }
 
 template <class T>
 const MathVector<T>& DiagonalMathMatrix<T>::at(size_t index) const
 {
+  std::cout << index;
   throw std::domain_error("Cannot retrieve a math vector from DiagonalMatrix");
 }
 
 template <class T>
 T& DiagonalMathMatrix<T>::at(size_t row, size_t column)
 {
-  if (row >= 0 && row < myRows && column >= 0 && column < myColumns)
+  if (row >= 0 && (int)row < myRows && column >= 0 && (int)column < myColumns)
   {
     if (row == column) return (*myDiagonal)[row];
     else 
@@ -257,10 +259,10 @@ T& DiagonalMathMatrix<T>::at(size_t row, size_t column)
 template <class T>
 const T& DiagonalMathMatrix<T>::at(size_t row, size_t column) const
 {
-  if (row >= 0 && row < myRows && column >= 0 && column < myColumns)
+  if (row >= 0 && (int)row < myRows && column >= 0 && (int)column < myColumns)
   {
     if (row == column) return (*myDiagonal)[row];
-    else return 0;
+    else return zero; 
   }
   else
   {
@@ -300,4 +302,12 @@ void DiagonalMathMatrix<T>::printToStream(std::ostream& os) const
     }
     os << "\n";
   }
+}
+
+template <class T>
+void DiagonalMathMatrix<T>::readFromStream(std::istream& is)
+{
+  int temp;
+  is >> temp;
+  throw std::domain_error("Cannot read DiagonalMathMatrix from stream!");
 }

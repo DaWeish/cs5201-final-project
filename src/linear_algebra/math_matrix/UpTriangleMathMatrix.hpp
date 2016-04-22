@@ -95,7 +95,7 @@ UpTriangleMathMatrix<T>& UpTriangleMathMatrix<T>::opAssign(const IMathMatrix<T>&
 template <class T>
 bool UpTriangleMathMatrix<T>::opEquality(const IMathMatrix<T>& rhs) const
 {
-  if (myColumns != rhs.cols()) return false;
+  if (myColumns != (int)rhs.cols()) return false;
   if (myRows.size() != rhs.rows()) return false;
 
   for (int i = 0, numRows = myRows.size(); i < numRows; ++i)
@@ -112,7 +112,7 @@ template <class T>
 UpTriangleMathMatrix<T>& UpTriangleMathMatrix<T>::opPlusEquals
     (const IMathMatrix<T>& rhs)
 {
-  if (myRows.size() == rhs.rows() && myColumns == rhs.cols())
+  if (myRows.size() == rhs.rows() && myColumns == (int)rhs.cols())
   {
     for (int i = 0, numRows = getRows(); i < numRows; ++i)
     {
@@ -133,7 +133,7 @@ template <class T>
 UpTriangleMathMatrix<T>& UpTriangleMathMatrix<T>::opMinusEquals
     (const IMathMatrix<T>& rhs)
 {
-  if (myRows.size() == rhs.rows() && myColumns == rhs.cols())
+  if (myRows.size() == rhs.rows() && myColumns == (int)rhs.cols())
   {
     for (auto i = 0, numRows = (int)getRows(); i < numRows; ++i)
     {
@@ -163,7 +163,7 @@ UpTriangleMathMatrix<T>& UpTriangleMathMatrix<T>::opTimesEquals(const T& scaler)
 template <class T>
 MathMatrix<T>* UpTriangleMathMatrix<T>::opPlus(const IMathMatrix<T>& rhs) const
 {
-  if (myRows.size() != rhs.rows() || myColumns != rhs.cols())
+  if (myRows.size() != rhs.rows() || myColumns != (int)rhs.cols())
   {
     throw std::domain_error("Cannot add two matrices of differing dimensions!");
   }
@@ -183,7 +183,7 @@ MathMatrix<T>* UpTriangleMathMatrix<T>::opPlus(const IMathMatrix<T>& rhs) const
 template <class T>
 MathMatrix<T>* UpTriangleMathMatrix<T>::opMinus(const IMathMatrix<T>& rhs) const
 {
-  if (myRows.size() != rhs.rows() || myColumns != rhs.cols())
+  if (myRows.size() != rhs.rows() || myColumns != (int)rhs.cols())
   {
     throw std::domain_error("Cannot subtract two matrices of differing dimensions!");
   }
@@ -217,7 +217,7 @@ UpTriangleMathMatrix<T>* UpTriangleMathMatrix<T>::opMinus() const
 template <class T>
 MathMatrix<T>* UpTriangleMathMatrix<T>::opTimes(const IMathMatrix<T>& rhs) const
 {
-  if (myColumns != rhs.rows()) {
+  if (myColumns != (int)rhs.rows()) {
     throw std::domain_error("Cannot multiply matrices of incorrect dimensions!");
   }
 
@@ -268,7 +268,7 @@ T& UpTriangleMathMatrix<T>::at(size_t row, size_t column)
 template <class T>
 const T& UpTriangleMathMatrix<T>::at(size_t row, size_t column) const
 {
-  if (row > column) return 0;
+  if (row > column) return zero;
   return (*(myRows.at(row)))[column - row];
 }
 
@@ -300,4 +300,12 @@ void UpTriangleMathMatrix<T>::printToStream(std::ostream& os) const
       os << std::setw(10) << value << " ";
     os << *(myRows[i]) << "\n";
   }
+}
+
+template <class T>
+void UpTriangleMathMatrix<T>::readFromStream(std::istream& is)
+{
+  int temp;
+  is >> temp;
+  throw std::domain_error("Cannot read UpTriangleMathMatrix from stream!");
 }
